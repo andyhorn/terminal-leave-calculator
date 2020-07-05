@@ -24,22 +24,32 @@
         <!-- Situation Selection -->
         <section class="section" v-if="currentStep == 0">
           <div class="row">
-            <div class="col text-right">
+            <div
+              class="col d-flex flex-column justify-content-center align-items-center"
+            >
               <p>What is your situation?</p>
               <p v-if="selectedSituation">
                 You selected: {{ selectedSituation }}
               </p>
             </div>
             <div class="col">
-              <select v-model="selectedSituation">
-                <option
-                  v-for="(option, index) in situations"
-                  :key="index"
-                  :value="option"
-                >
-                  {{ option }}
-                </option>
-              </select>
+              <div class="border rounded p-4">
+                <div class="form-group">
+                  <label for="situation-picker">Pick an Option</label>
+                  <select
+                    id="situation-picker"
+                    v-model="selectedSituation"
+                    class="form-control"
+                  >
+                    <option
+                      v-for="(option, index) in situations"
+                      :key="index"
+                      :value="option"
+                      >{{ option }}</option
+                    >
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -47,28 +57,41 @@
         <!-- Plan to Retire Section -->
         <section class="section" v-if="currentStep == 1">
           <div class="row">
-            <div class="col d-flex justify-content-end align-items-center">
+            <div
+              class="col d-flex flex-column justify-content-center align-items-center"
+            >
               <p class="m-0 p-0">When do you plan to retire?</p>
+              <p v-if="retirementDate">
+                You selected a retirement date of: {{ retirementDate }}
+              </p>
+              <p class="text-danger" v-if="dateWarning">
+                Note: You can only retire on the 1st of the month; Your date has
+                been automatically adjusted.
+              </p>
             </div>
             <div class="col">
               <div class="border rounded p-4">
-                <label for="retire-on-date-picker">Retire On</label>
-                <div class="input-group">
+                <div class="form-group">
+                  <label for="#retire-on-date-picker">Retire On</label>
                   <input
-                    id="retire-on-date-pickter"
+                    id="retire-on-date-picker"
+                    class="form-control"
+                    @change="handleRetirementOnDatePickerChange"
                     type="date"
                     v-model="retireOnDate"
                   />
                 </div>
               </div>
-              <p class="my-5 p-0">OR</p>
+              <p class="my-5 p-0 text-center">OR</p>
               <div class="border rounded p-4">
-                <label for="retire-from-date-picker"
-                  >Retire 20 Years From</label
-                >
-                <div class="input-group">
+                <div class="form-group">
+                  <label for="#retire-from-date-picker"
+                    >Retire 20 Years From</label
+                  >
                   <input
+                    @change="handleRetirementFromDatePickerChange"
                     id="retire-from-date-picker"
+                    class="form-control"
                     type="date"
                     v-model="retireFromDate"
                   />
@@ -120,6 +143,8 @@
         currentStep: 0,
         retireOnDate: null,
         retireFromDate: null,
+        retirementDate: null,
+        dateWarning: false,
       },
       computed: {
         isBackDisabled() {
@@ -137,6 +162,33 @@
         },
         onNext() {
           this.currentStep += 1;
+        },
+        handleRetirementFromDatePickerChange() {
+          this.retireOnDate = null;
+
+          let date = new Date(this.retireFromDate);
+          date.setFullYear(date.getFullYear() + 20);
+
+          this.setRetirementDate(date.getTime());
+        },
+        handleRetirementOnDatePickerChange() {
+          this.retireFromDate = null;
+
+          const date = new Date(this.retireOnDate);
+
+          this.setRetirementDate(date.getTime());
+        },
+        setRetirementDate(ticks) {
+          this.dateWarning = false;
+          let date = new Date(ticks);
+
+          if (date.getDate() !== 1) {
+            this.dateWarning = true;
+            date.setDate(1);
+            date.setMonth(date.getMonth() + 1);
+          }
+
+          this.retirementDate = date;
         },
       },
     });

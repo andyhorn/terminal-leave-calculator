@@ -21,8 +21,8 @@
           <p>Let's get started...</p>
         </section>
 
-        <!-- Action Section -->
-        <section class="section">
+        <!-- Situation Selection -->
+        <section class="section" v-if="currentStep == 0">
           <div class="row">
             <div class="col text-right">
               <p>What is your situation?</p>
@@ -44,16 +44,28 @@
           </div>
         </section>
 
+        <section class="section" v-if="currentStep == 1">
+          <div class="row"></div>
+        </section>
+
         <!-- Button Footer -->
         <section class="section fixed-bottom">
           <div class="row">
             <div class="col d-flex justify-content-center">
-              <button class="btn btn-primary w-50" :disabled="isBackDisabled">
+              <button
+                class="btn btn-primary w-50"
+                :disabled="isBackDisabled"
+                @click="onBack"
+              >
                 Back
               </button>
             </div>
             <div class="col d-flex justify-content-center">
-              <button class="btn btn-primary w-50" :disabled="isNextDisabled">
+              <button
+                class="btn btn-primary w-50"
+                :disabled="isNextDisabled"
+                @click="onNext"
+              >
                 Next
               </button>
             </div>
@@ -87,7 +99,14 @@
           if (this.currentStep == 0) return this.selectedSituation == "";
         },
       },
-      methods: {},
+      methods: {
+        onBack() {
+          this.currentStep -= 1;
+        },
+        onNext() {
+          this.currentStep += 1;
+        },
+      },
     });
   </script>
 </html>

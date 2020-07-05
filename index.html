@@ -13,13 +13,16 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="container">
-      <section class="section">
-        <h1>Terminal Leave Calculator</h1>
-        <p>Let's get started...</p>
-      </section>
-      <section>
-        <div id="app">
+    <div id="app">
+      <div class="container">
+        <!-- Header Section -->
+        <section class="section">
+          <h1>Terminal Leave Calculator</h1>
+          <p>Let's get started...</p>
+        </section>
+
+        <!-- Action Section -->
+        <section class="section">
           <div class="row">
             <div class="col text-right">
               <p>What is your situation?</p>
@@ -39,8 +42,24 @@
               </select>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        <!-- Button Footer -->
+        <section class="section fixed-bottom">
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <button class="btn btn-primary w-50" :disabled="isBackDisabled">
+                Back
+              </button>
+            </div>
+            <div class="col d-flex justify-content-center">
+              <button class="btn btn-primary w-50" :disabled="isNextDisabled">
+                Next
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   </body>
 
@@ -55,6 +74,18 @@
           "I am being honorably involuntarily separated",
         ],
         selectedSituation: "",
+        steps: [0, 1, 2],
+        currentStep: 0,
+      },
+      computed: {
+        isBackDisabled() {
+          return this.currentStep == 0;
+        },
+        isNextDisabled() {
+          if (this.currentStep >= this.steps.length) return true;
+
+          if (this.currentStep == 0) return this.selectedSituation == "";
+        },
       },
       methods: {},
     });

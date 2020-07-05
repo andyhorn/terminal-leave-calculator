@@ -61,10 +61,10 @@
               class="col d-flex flex-column justify-content-center align-items-center"
             >
               <p class="m-0 p-0">When do you plan to retire?</p>
-              <p v-if="retirementDate">
+              <p v-if="retirementDate" class="text-center">
                 You selected a retirement date of: {{ retirementDate }}
               </p>
-              <p class="text-danger" v-if="dateWarning">
+              <p class="text-danger text-center" v-if="dateWarning">
                 Note: You can only retire on the 1st of the month; Your date has
                 been automatically adjusted.
               </p>
@@ -188,7 +188,7 @@
             date.setMonth(date.getMonth() + 1);
           }
 
-          this.retirementDate = date;
+          this.retirementDate = date.toDateString();
         },
       },
     });

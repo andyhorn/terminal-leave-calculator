@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Terminal Leave Calculator</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <section class="section">
+        <h1>Terminal Leave Calculator</h1>
+        <p>Let's get started...</p>
+      </section>
+      <section>
+        <div id="app">
+          <div class="row">
+            <div class="col text-right">
+              <p>What is your situation?</p>
+              <p v-if="selectedSituation">
+                You selected: {{ selectedSituation }}
+              </p>
+            </div>
+            <div class="col">
+              <select v-model="selectedSituation">
+                <option
+                  v-for="(option, index) in situations"
+                  :key="index"
+                  :value="option"
+                >
+                  {{ option }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+
+  <script>
+    var app = new Vue({
+      el: "#app",
+      data: {
+        message: "hello world!",
+        situations: [
+          "I plan to retire",
+          "I plan to separate",
+          "I am being honorably involuntarily separated",
+        ],
+        selectedSituation: "",
+      },
+      methods: {},
+    });
+  </script>
+</html>

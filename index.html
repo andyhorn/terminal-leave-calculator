@@ -44,8 +44,38 @@
           </div>
         </section>
 
+        <!-- Plan to Retire Section -->
         <section class="section" v-if="currentStep == 1">
-          <div class="row"></div>
+          <div class="row">
+            <div class="col d-flex justify-content-end align-items-center">
+              <p class="m-0 p-0">When do you plan to retire?</p>
+            </div>
+            <div class="col">
+              <div class="border rounded p-4">
+                <label for="retire-on-date-picker">Retire On</label>
+                <div class="input-group">
+                  <input
+                    id="retire-on-date-pickter"
+                    type="date"
+                    v-model="retireOnDate"
+                  />
+                </div>
+              </div>
+              <p class="my-5 p-0">OR</p>
+              <div class="border rounded p-4">
+                <label for="retire-from-date-picker"
+                  >Retire 20 Years From</label
+                >
+                <div class="input-group">
+                  <input
+                    id="retire-from-date-picker"
+                    type="date"
+                    v-model="retireFromDate"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         <!-- Button Footer -->
@@ -88,6 +118,8 @@
         selectedSituation: "",
         steps: [0, 1, 2],
         currentStep: 0,
+        retireOnDate: null,
+        retireFromDate: null,
       },
       computed: {
         isBackDisabled() {

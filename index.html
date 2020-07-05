@@ -101,6 +101,52 @@
           </div>
         </section>
 
+        <!-- CONUS or OCOUNUS Section -->
+        <section class="section" v-if="currentStep == 2">
+          <div class="row">
+            <div
+              class="col d-flex flex-column justify-content-center align-items-center"
+            >
+              <p>At the time of retirement, will you be CONUS or OCONUS?</p>
+              <p v-if="conusSelection">
+                You selected: {{ conusSelection.toUpperCase() }}
+              </p>
+            </div>
+            <div class="col">
+              <div class="border rounded p-4">
+                <!-- <div class="form-group"> -->
+                <div class="custom-control custom-radio">
+                  <input
+                    class="custom-control-input"
+                    type="radio"
+                    id="conus-radio"
+                    name="conus-selection"
+                    value="conus"
+                    v-model="conusSelection"
+                  />
+                  <label for="conus-radio" class="custom-control-label"
+                    >CONUS</label
+                  >
+                </div>
+                <div class="custom-control custom-radio">
+                  <input
+                    class="custom-control-input"
+                    type="radio"
+                    id="oconus-radio"
+                    name="conus-selection"
+                    value="oconus"
+                    v-model="conusSelection"
+                  />
+                  <label for="oconus-radio" class="custom-control-label"
+                    >OCONUS</label
+                  >
+                </div>
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- Button Footer -->
         <section class="section fixed-bottom">
           <div class="row">
@@ -145,6 +191,7 @@
         retireFromDate: null,
         retirementDate: null,
         dateWarning: false,
+        conusSelection: "",
       },
       computed: {
         isBackDisabled() {
@@ -154,6 +201,8 @@
           if (this.currentStep >= this.steps.length) return true;
 
           if (this.currentStep == 0) return this.selectedSituation == "";
+
+          if (this.currentStep == 1) return this.retirementDate == null;
         },
       },
       methods: {

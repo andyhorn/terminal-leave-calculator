@@ -163,7 +163,41 @@
           </div>
         </section>
 
-        <section class="section" v-if="currentStep == 3"></section>
+        <!-- Days of Leave Section -->
+        <section class="section" v-if="currentStep == 3">
+          <div class="row">
+            <div
+              class="col d-flex flex-column justify-content-center align-items-center"
+            >
+              <p>How many days of leave do you plan to have?</p>
+            </div>
+            <div
+              class="col d-flex flex-column justify-content-center align-items-center"
+            >
+              <div class="border rounded p-3">
+                <div class="input-group">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    id="days-of-leave-input"
+                    v-model="daysOfLeave"
+                    class="form-control"
+                  />
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      days of leave
+                    </div>
+                  </div>
+                </div>
+                <p class="text-center m-0 p-4">OR</p>
+                <button class="btn btn-primary">
+                  Calculate Assuming Standard Maximum
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <!-- Button Footer -->
         <section class="section fixed-bottom">
@@ -199,6 +233,7 @@
     }
     label.radio-active {
       font-size: 1.1rem;
+      font-weight: bold;
       color: green;
     }
   </style>
@@ -237,6 +272,7 @@
           "November",
           "December",
         ],
+        daysOfLeave: 0,
       },
       computed: {
         isBackDisabled() {
@@ -249,14 +285,6 @@
 
           if (this.currentStep == 1) return this.retirementDate == null;
         },
-        // retirementDateString() {
-        //   if (this.retirementDate) {
-        //     let date = new Date(this.retirementDate);
-        //     return date.toUTCDateString();
-        //   }
-
-        //   return "";
-        // },
       },
       methods: {
         onBack() {
@@ -265,20 +293,18 @@
         onNext() {
           this.currentStep += 1;
         },
+        calculateDaysOfLeave() {},
         handleRetirementFromDatePickerChange() {
           this.retireOnDate = null;
 
           let ticks = this.getTicks(this.retireFromDate);
           ticks = this.addYearsToDate(ticks);
-          //   const ticks = this.getTicks(this.retireFromDate);
-          //   const date = this.addYearsToDate(ticks);
 
           this.setRetirementDate(ticks);
         },
         handleRetirementOnDatePickerChange() {
           this.retireFromDate = null;
 
-          //   const date = new Date(this.retireOnDate);
           const ticks = this.getTicks(this.retireOnDate);
 
           this.setRetirementDate(ticks);

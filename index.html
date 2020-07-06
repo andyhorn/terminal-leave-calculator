@@ -84,17 +84,29 @@
               </div>
               <p class="my-5 p-0 text-center">OR</p>
               <div class="border rounded p-4">
-                <div class="form-group">
-                  <label for="#retire-from-date-picker"
-                    >Retire 20 Years From</label
-                  >
-                  <input
-                    @change="handleRetirementFromDatePickerChange"
-                    id="retire-from-date-picker"
-                    class="form-control"
-                    type="date"
-                    v-model="retireFromDate"
-                  />
+                <div class="form-inline">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">Retire</div>
+                    </div>
+                    <input
+                      type="number"
+                      v-model="retireFromYears"
+                      class="form-control"
+                      min="0"
+                      max="100"
+                      @change="handleRetireFromYearsChange"
+                    />
+                    <div class="input-group-append">
+                      <div class="input-group-text">years from</div>
+                    </div>
+                    <input
+                      type="date"
+                      v-model="retireFromDate"
+                      class="form-control w-25"
+                      @change="handleRetirementFromDatePickerChange"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -114,7 +126,6 @@
             </div>
             <div class="col">
               <div class="border rounded p-4">
-                <!-- <div class="form-group"> -->
                 <div class="custom-control custom-radio p-3">
                   <input
                     class="custom-control-input"
@@ -147,11 +158,12 @@
                     >OCONUS</label
                   >
                 </div>
-                <!-- </div> -->
               </div>
             </div>
           </div>
         </section>
+
+        <section class="section" v-if="currentStep == 3"></section>
 
         <!-- Button Footer -->
         <section class="section fixed-bottom">
@@ -207,8 +219,24 @@
         retireOnDate: null,
         retireFromDate: null,
         retirementDate: null,
+        retirementTicks: 0,
         dateWarning: false,
         conusSelection: "",
+        retireFromYears: 20,
+        months: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ],
       },
       computed: {
         isBackDisabled() {
@@ -221,6 +249,14 @@
 
           if (this.currentStep == 1) return this.retirementDate == null;
         },
+        // retirementDateString() {
+        //   if (this.retirementDate) {
+        //     let date = new Date(this.retirementDate);
+        //     return date.toUTCDateString();
+        //   }
+
+        //   return "";
+        // },
       },
       methods: {
         onBack() {
@@ -232,29 +268,73 @@
         handleRetirementFromDatePickerChange() {
           this.retireOnDate = null;
 
-          let date = new Date(this.retireFromDate);
-          date.setFullYear(date.getFullYear() + 20);
+          let ticks = this.getTicks(this.retireFromDate);
+          ticks = this.addYearsToDate(ticks);
+          //   const ticks = this.getTicks(this.retireFromDate);
+          //   const date = this.addYearsToDate(ticks);
 
-          this.setRetirementDate(date.getTime());
+          this.setRetirementDate(ticks);
         },
         handleRetirementOnDatePickerChange() {
           this.retireFromDate = null;
 
-          const date = new Date(this.retireOnDate);
+          //   const date = new Date(this.retireOnDate);
+          const ticks = this.getTicks(this.retireOnDate);
 
-          this.setRetirementDate(date.getTime());
+          this.setRetirementDate(ticks);
+        },
+        handleRetireFromYearsChange() {
+          if (this.retireFromDate) {
+            this.handleRetirementFromDatePickerChange();
+          }
         },
         setRetirementDate(ticks) {
           this.dateWarning = false;
-          let date = new Date(ticks);
 
-          if (date.getDate() !== 1) {
+          const date = new Date();
+          date.setTime(ticks);
+
+          const dayOfMonth = date.getUTCDate();
+
+          if (dayOfMonth != 1) {
             this.dateWarning = true;
-            date.setDate(1);
-            date.setMonth(date.getMonth() + 1);
+            date.setUTCDate(1);
+            if (date.getUTCMonth() != 11)
+              date.setUTCMonth(date.getUTCMonth() + 1);
+            else {
+              date.setUTCMonth(0);
+              date.setUTCFullYear(Number(date.getUTCFullYear()) + 1);
+            }
           }
 
-          this.retirementDate = date.toDateString();
+          ticks = date.getTime();
+          const dateString = this.makeDateString(ticks);
+          this.retirementDate = dateString;
+          this.retirementTicks = ticks;
+        },
+        addYearsToDate(ticks) {
+          if (ticks) {
+            const date = new Date(ticks);
+            const currentYear = date.getFullYear();
+            const newYear = Number(currentYear) + Number(this.retireFromYears);
+            date.setFullYear(newYear);
+            return date;
+          }
+        },
+        getTicks(date) {
+          const ticks = new Date(date).getTime();
+          return ticks;
+        },
+        makeDateString(ticks) {
+          const date = new Date();
+          date.setTime(ticks);
+
+          const dayOfMonth = date.getUTCDate();
+          const monthOfYear = this.months[date.getUTCMonth()];
+          const fullYear = date.getUTCFullYear();
+
+          const dateString = `${dayOfMonth} ${monthOfYear}, ${fullYear}`;
+          return dateString;
         },
       },
     });

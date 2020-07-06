@@ -266,6 +266,34 @@
           </div>
         </section>
 
+        <section class="section" v-if="currentStep == 5">
+          <div class="row">
+            <div class="col">
+              <p>Assuming:</p>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Final Separation Date</th>
+                    <th v-if="daysOfPtdy">Days of PTDY</th>
+                    <th v-if="terminalLeave">Days of Terminal Leave</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ retirementDate }}</td>
+                    <td v-if="daysOfPtdy">{{ daysOfPtdy }}</td>
+                    <td v-if="terminalLeave">{{ daysOfTerminalLeave }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>You should start your terminal leave on:</p>
+            </div>
+            <div class="col">
+              <p>{{ beginTerminalLeaveDate }}</p>
+            </div>
+          </div>
+        </section>
+
         <!-- Button Footer -->
         <section class="section fixed-bottom">
           <div class="row">
@@ -320,7 +348,7 @@
           "I am being honorably involuntarily separated",
         ],
         selectedSituation: "",
-        steps: [0, 1, 2, 3, 4],
+        steps: [0, 1, 2, 3, 4, 5],
         currentStep: 0,
         retireOnDate: null,
         retireFromDate: null,
@@ -344,6 +372,9 @@
           "December",
         ],
         daysOfLeave: 0,
+        daysOfPtdy: null,
+        terminalLeave: null,
+        beginTerminalLeaveDate: null,
         involuntaryAssistance: null,
       },
       computed: {

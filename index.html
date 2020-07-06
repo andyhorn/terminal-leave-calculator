@@ -17,7 +17,22 @@
         <!-- Header Section -->
         <section class="section">
           <h1>Terminal Leave Calculator</h1>
-          <p>Let's get started...</p>
+          <div class="d-flex justify-content-between">
+            <button
+              class="btn btn-primary w-25"
+              :disabled="isBackDisabled"
+              @click="onBack"
+            >
+              Back
+            </button>
+            <button
+              class="btn btn-primary w-25"
+              :disabled="isNextDisabled"
+              @click="onNext"
+            >
+              Next
+            </button>
+          </div>
         </section>
 
         <!-- Situation Selection -->
@@ -271,65 +286,44 @@
         <section class="section" v-if="currentStep == 5">
           <div class="row">
             <div class="col">
-              <p>Assuming:</p>
-              <table class="table">
-                <tr>
-                  <th>Final Separation Date</th>
-                  <td>{{ retirementDate }}</td>
-                </tr>
-                <tr v-if="daysOfPtdy">
-                  <th>Days of PTDY</th>
-                  <td>{{ daysOfPtdy }}</td>
-                </tr>
-                <tr v-if="daysOfTerminalLeave !== null">
-                  <th>Days of Terminal Leave</th>
-                  <td>{{ daysOfTerminalLeave }}</td>
-                </tr>
-                <tr v-if="additionalDaysOfLeave">
-                  <th>Additional Days of Leave</th>
-                  <td>{{ additionalDaysOfLeave }}</td>
-                </tr>
-                <tr>
-                  <th>CONUS/OCONUS Days of Leave</th>
-                  <td>{{ daysOfConusLeave }}</td>
-                </tr>
-                <tr>
-                  <th>Total Days of Leave</th>
-                  <td>{{ totalDaysOfLeave }}</td>
-                </tr>
-              </table>
-            </div>
-            <div
-              class="col d-flex flex-column justify-content-center align-items-center"
-            >
-              <div class="border rounded p-3">
+              <div class="border rounded p-3 text-center w-100">
                 <p>You should start your leave on:</p>
                 <h2 class="text-success">{{ beginTerminalLeaveDate }}</h2>
               </div>
             </div>
           </div>
-        </section>
-
-        <!-- Button Footer -->
-        <section class="section fixed-bottom">
           <div class="row">
-            <div class="col d-flex justify-content-center">
-              <button
-                class="btn btn-primary w-50"
-                :disabled="isBackDisabled"
-                @click="onBack"
-              >
-                Back
-              </button>
-            </div>
-            <div class="col d-flex justify-content-center">
-              <button
-                class="btn btn-primary w-50"
-                :disabled="isNextDisabled"
-                @click="onNext"
-              >
-                Next
-              </button>
+            <div class="col">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Final Separation Date</th>
+                    <th v-if="daysOfPtdy !== null">Days of PTDY</th>
+                    <th v-if="daysOfTerminalLeave !== null">
+                      Days of Terminal Leave
+                    </th>
+                    <th v-if="additionalDaysOfLeave !== null">
+                      Days of Additional Leave
+                    </th>
+                    <th>CONUS/OCONUS Days of Leave</th>
+                    <th>Total Leave Days</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ retirementDate }}</td>
+                    <td v-if="daysOfPtdy !== null">{{ daysOfPtdy }}</td>
+                    <td v-if="daysOfTerminalLeave !== null">
+                      {{ daysOfTerminalLeave }}
+                    </td>
+                    <td v-if="additionalDaysOfLeave !== null">
+                      {{ additionalDaysOfLeave }}
+                    </td>
+                    <td>{{ daysOfConusLeave }}</td>
+                    <td>{{ totalDaysOfLeave }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
@@ -414,15 +408,21 @@
         beginTerminalLeaveDate() {
           const finalSepDate = new Date(this.retirementTicks);
 
-          const MS_PER_MIN = 1000;
+          const MS_PER_SEC = 1000;
+          const SEC_PER_MIN = 60;
           const MIN_PER_HOUR = 60;
           const HOUR_PER_DAY = 24;
 
           const millisecondsOfLeave =
-            this.totalDaysOfLeave * HOUR_PER_DAY * MIN_PER_HOUR * MS_PER_MIN;
+            this.totalDaysOfLeave *
+            HOUR_PER_DAY *
+            MIN_PER_HOUR *
+            SEC_PER_MIN *
+            MS_PER_SEC;
 
           const beginLeaveTime = finalSepDate.getTime() - millisecondsOfLeave;
-          const leaveDate = new Date(beginLeaveTime);
+          const leaveDate = new Date();
+          leaveDate.setTime(beginLeaveTime);
 
           return `${leaveDate.getUTCDate()} ${
             this.months[leaveDate.getUTCMonth()]
@@ -433,8 +433,6 @@
         },
         totalDaysOfLeave() {
           let days = 0;
-
-          if (this.daysOfLeave) days += Number(this.daysOfLeave);
 
           if (this.daysOfPtdy) days += Number(this.daysOfPtdy);
 
@@ -483,6 +481,7 @@
         },
         calculateMaxDaysOfLeave() {
           this.daysOfTerminalLeave = 0;
+          this.daysOfLeave = 0;
 
           const retirementDate = new Date(this.retirementTicks);
           const today = new Date();

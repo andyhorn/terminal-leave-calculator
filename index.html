@@ -209,9 +209,61 @@
           </div>
         </section>
 
-        <!-- Results Section -->
+        <!-- Additional Days Section -->
         <section class="section" v-if="currentStep == 4">
-          <p>Assuming {{ daysOfLeave }} days of leave...</p>
+          <div class="row">
+            <div class="col">
+              <p>
+                As an involuntary seperatee, you can receive up to thirty (30)
+                days of extra leave or ten (10) days of PTDY for transitional
+                assistance.
+              </p>
+              <p>Do you plan to use either?</p>
+            </div>
+            <div class="col">
+              <div class="border rounded p-3">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="involuntaryAssistance"
+                    id="involuntary-none-radio"
+                    value="0"
+                    v-model="involuntaryAssistance"
+                  />
+                  <label class="form-check-label" for="involuntary-none-radio"
+                    >None</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="involuntaryAssistance"
+                    id="involuntary-ten-radio"
+                    value="10"
+                    v-model="involuntaryAssistance"
+                  />
+                  <label class="form-check-label" for="involuntary-ten-radio"
+                    >Ten Days of PTDY</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="involuntaryAssisstance"
+                    id="involuntary-thirty-radio"
+                    value="30"
+                    v-model="involuntaryAssistance"
+                  />
+                  <label class="form-check-label" for="involuntary-thirty-radio"
+                    >Thirty Days of Extra Leave</label
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         <!-- Button Footer -->
@@ -268,14 +320,14 @@
           "I am being honorably involuntarily separated",
         ],
         selectedSituation: "",
-        steps: [0, 1, 2],
+        steps: [0, 1, 2, 3, 4],
         currentStep: 0,
         retireOnDate: null,
         retireFromDate: null,
         retirementDate: null,
         retirementTicks: 0,
         dateWarning: false,
-        conusSelection: "",
+        conusSelection: null,
         retireFromYears: 20,
         months: [
           "January",
@@ -292,6 +344,7 @@
           "December",
         ],
         daysOfLeave: 0,
+        involuntaryAssistance: null,
       },
       computed: {
         isBackDisabled() {
@@ -303,6 +356,12 @@
           if (this.currentStep == 0) return this.selectedSituation == "";
 
           if (this.currentStep == 1) return this.retirementDate == null;
+
+          if (this.currentStep == 2) return this.conusSelection == null;
+
+          if (this.currentStep == 4) return this.involuntaryAssistance == null;
+
+          return true;
         },
       },
       methods: {
@@ -310,7 +369,10 @@
           this.currentStep -= 1;
         },
         onNext() {
-          this.currentStep += 1;
+          if (this.currentStep != 3) this.currentStep += 1;
+          else if (this.selectedSituation == this.situations[2])
+            this.currentStep += 1;
+          else this.currentStep += 2;
         },
         calculateDaysOfLeave() {
           this.onNext();

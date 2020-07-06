@@ -10,7 +10,7 @@
       crossorigin="anonymous"
     />
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
-    <link rel="stylesheet" href="style.css" />
+    <!-- <link rel="stylesheet" href="style.css" /> -->
   </head>
   <body>
     <div id="app">
@@ -115,7 +115,7 @@
             <div class="col">
               <div class="border rounded p-4">
                 <!-- <div class="form-group"> -->
-                <div class="custom-control custom-radio">
+                <div class="custom-control custom-radio p-3">
                   <input
                     class="custom-control-input"
                     type="radio"
@@ -124,11 +124,14 @@
                     value="conus"
                     v-model="conusSelection"
                   />
-                  <label for="conus-radio" class="custom-control-label"
+                  <label
+                    for="conus-radio"
+                    class="custom-control-label"
+                    :class="{ 'radio-active': conusSelection == 'conus' }"
                     >CONUS</label
                   >
                 </div>
-                <div class="custom-control custom-radio">
+                <div class="custom-control custom-radio p-3">
                   <input
                     class="custom-control-input"
                     type="radio"
@@ -137,7 +140,10 @@
                     value="oconus"
                     v-model="conusSelection"
                   />
-                  <label for="oconus-radio" class="custom-control-label"
+                  <label
+                    for="oconus-radio"
+                    class="custom-control-label"
+                    :class="{ 'radio-active': conusSelection == 'oconus' }"
                     >OCONUS</label
                   >
                 </div>
@@ -173,6 +179,17 @@
       </div>
     </div>
   </body>
+
+  <style>
+    .section {
+      padding-top: 3rem;
+      padding-bottom: 3rem;
+    }
+    label.radio-active {
+      font-size: 1.1rem;
+      color: green;
+    }
+  </style>
 
   <script>
     var app = new Vue({

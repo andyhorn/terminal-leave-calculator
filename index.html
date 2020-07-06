@@ -10,10 +10,9 @@
       crossorigin="anonymous"
     />
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
-    <!-- <link rel="stylesheet" href="style.css" /> -->
   </head>
   <body>
-    <div id="app">
+    <div id="app" v-cloak>
       <div class="container">
         <!-- Header Section -->
         <section class="section">
@@ -190,16 +189,29 @@
                     class="form-control"
                   />
                   <div class="input-group-append">
-                    <button class="btn btn-primary">Calculate</button>
+                    <button
+                      class="btn btn-primary"
+                      @click="calculateDaysOfLeave"
+                    >
+                      Calculate
+                    </button>
                   </div>
                 </div>
                 <p class="text-center m-0 p-4">OR</p>
-                <button class="btn btn-primary" @click="calculateDaysOfLeave">
+                <button
+                  class="btn btn-primary"
+                  @click="calculateMaxDaysOfLeave"
+                >
                   Calculate Assuming Standard Maximum
                 </button>
               </div>
             </div>
           </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="section" v-if="currentStep == 4">
+          <p>Assuming {{ daysOfLeave }} days of leave...</p>
         </section>
 
         <!-- Button Footer -->
@@ -239,12 +251,16 @@
       font-weight: bold;
       color: green;
     }
+    [v-cloak] {
+      display: none;
+    }
   </style>
 
   <script>
     var app = new Vue({
       el: "#app",
       data: {
+        isVisible: false,
         message: "hello world!",
         situations: [
           "I plan to retire",
@@ -296,7 +312,13 @@
         onNext() {
           this.currentStep += 1;
         },
-        calculateDaysOfLeave() {},
+        calculateDaysOfLeave() {
+          this.onNext();
+        },
+        calculateMaxDaysOfLeave() {
+          this.daysOfLeave = 60;
+          this.onNext();
+        },
         handleRetirementFromDatePickerChange() {
           this.retireOnDate = null;
 
@@ -365,6 +387,9 @@
           const dateString = `${dayOfMonth} ${monthOfYear}, ${fullYear}`;
           return dateString;
         },
+      },
+      mounted() {
+        this.isVisible = true;
       },
     });
   </script>
